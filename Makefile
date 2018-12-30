@@ -3,22 +3,14 @@
 #
 CC = icc
 
+# Uncomment below to compile the affinity scheduler with locks
+# DEFINE += -DLOCK -DAFFINITY -DRUNTIME -DBEST_SCHEDULE
+DEFINE =
+
 CCFLAGS = -O3 -qopenmp -std=c99
 CCFLAGS += -Wall
-# Uncomment below to compile the affinity scheduler with locks
-CCFLAGS += -DLOCK
-LIB= -lm
-#
-# C compiler and options for PGI 
-#
-#CC=     pgcc -O3 -mp -tp=px
-#LIB=	-lm
+LIB= -lm -qopenmp
 
-#
-# C compiler and options for GNU 
-#
-#CC=     gcc -O3 -fopenmp
-#LIB=	-lm
 
 SRC = src
 OBJ = obj
@@ -28,31 +20,32 @@ OUT = out
 SCR = scripts
 INC = includes
 
-VPATH = $(SRC) $(OBJ) $(BIN) $(RES) $(OUT) $(SCR) $(INC)
-INCLUDES += -I $(INC)
+AFF = $(SRC)/affinity
+LOOPS = $(SRC)/loops
+OMPLIB = $(SRC)/omplib
+
+VPATH = $(SRC) $(OBJ) $(BIN) $(RES) $(OUT) $(SCR) $(INC) \
+		$(AFF) $(LOOPS) $(OMPLIB)
+
+INCLUDES += -I$(INC) -I$(AFF) -I$(LOOPS) -I$(OMPLIB)
 #
 # Object files
 #
-SCH_OBJ = $(OBJ)/loops_scheduling.o
-AFF_OBJ = $(OBJ)/loops_affinity.o
-REF_OBJ = $(OBJ)/ref.o
+OMPLIB_OBJ = $(OBJ)/omplib.o
+LOOPS_OBJ = $(OBJ)/workload.o
+AFFINITY_OBJ = $(OBJ)/affinity.o $(OBJ)/mem.o
 
-all: clean $(BIN)/loops_scheduling $(BIN)/loops_affinity
+MAIN_OBJ = $(OBJ)/main.o
 
-.PHONY: ref 
-ref: $(BIN)/ref
-	$(BIN)/ref
+all: dir
+	make $(BIN)/serial -B
+	make $(BIN)/runtime DEFINE=-DRUNTIME -B
+	make $(BIN)/best_schedule DEFINE=-DBEST_SCHEDULE -B
+	make $(BIN)/affinity DEFINE=-DAFFINITY -B
+	make $(BIN)/affinity_lock DEFINE=-DAFFINITY DEFINE+=-DLOCK -B
 
-.PHONY: run
-run: $(BIN)/loops_affinity $(BIN)/loops_scheduling
-	$(BIN)/loops_affinity
-	$(BIN)/loops_scheduling
-
-affinity: $(BIN)/loops_affinity
-	$(BIN)/loops_affinity	
-
-scheduling: $(BIN)/loops_scheduling
-	$(BIN)/loops_scheduling
+dir:
+	mkdir -p $(OBJ) $(BIN) $(OUT)
 
 plot:
 	python scripts/plot_results.py -r 1 -d res/find_schedule/
@@ -63,21 +56,29 @@ best_plot:
 #
 # Compile
 #
-$(BIN)/ref:   $(REF_OBJ)
-	$(CC) $(CCFLAGS) -o $@ $(REF_OBJ) $(LIB)
-
-$(BIN)/loops_affinity:   $(AFF_OBJ)
-	$(CC) $(CCFLAGS) -o $@ $(AFF_OBJ) $(LIB)
-
-$(BIN)/loops_scheduling:   $(SCH_OBJ)
-	$(CC) $(CCFLAGS) -o $@ $(SCH_OBJ) $(LIB)
-
 $(OBJ)/%.o: %.c
-	$(CC) $(CCFLAGS) $(INCLUDES) -o $@ -c $<
+	$(CC) $(CCFLAGS) $(DEFINE) $(INCLUDES) -o $@ -c $<
+
+#
+# Link
+#	
+$(BIN)/serial: $(OMPLIB_OBJ) $(LOOPS_OBJ) $(MAIN_OBJ)
+	$(CC) $^ -o $@ $(LIB)
+
+$(BIN)/runtime: $(OMPLIB_OBJ) $(LOOPS_OBJ) $(MAIN_OBJ)
+	$(CC)  $^ -o $@ $(LIB)
+
+$(BIN)/best_schedule: $(OMPLIB_OBJ) $(LOOPS_OBJ) $(MAIN_OBJ)
+	$(CC) $(CCFLAGS) $^ -o $@ $(LIB)
+
+$(BIN)/affinity: $(OMPLIB_OBJ) $(LOOPS_OBJ) $(AFFINITY_OBJ) $(MAIN_OBJ)
+	$(CC) $(CCFLAGS) $^ -o $@ $(LIB)
+
+$(BIN)/affinity_lock: $(OMPLIB_OBJ) $(LOOPS_OBJ) $(AFFINITY_OBJ) $(MAIN_OBJ)
+	$(CC) $(CCFLAGS) $^ -o $@ $(LIB)
 
 #
 # Clean out object files and the executable.
 #
 clean:
 	rm -rf $(OBJ) $(BIN) $(OUT)
-	mkdir -p $(OBJ) $(BIN) $(OUT)
