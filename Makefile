@@ -28,24 +28,26 @@ VPATH = $(SRC) $(OBJ) $(BIN) $(RES) $(OUT) $(SCR) $(INC) \
 		$(AFF) $(LOOPS) $(OMPLIB)
 
 INCLUDES += -I$(INC) -I$(AFF) -I$(LOOPS) -I$(OMPLIB)
-#
-# Object files
-#
+
 OMPLIB_OBJ = $(OBJ)/omplib.o
 LOOPS_OBJ = $(OBJ)/workload.o
 AFFINITY_OBJ = $(OBJ)/affinity.o $(OBJ)/mem.o
 
 MAIN_OBJ = $(OBJ)/main.o
 
+## all: compile and create the executables
+.PHONY: all
 all: dir
-	make $(BIN)/serial -B
-	make $(BIN)/runtime DEFINE=-DRUNTIME -B
-	make $(BIN)/best_schedule DEFINE=-DBEST_SCHEDULE -B
-	make $(BIN)/affinity DEFINE=-DAFFINITY -B
-	make $(BIN)/affinity_lock DEFINE=-DAFFINITY DEFINE+=-DLOCK -B
+	@make $(BIN)/serial -B
+	@make $(BIN)/runtime DEFINE=-DRUNTIME -B
+	@make $(BIN)/best_schedule DEFINE=-DBEST_SCHEDULE -B
+	@make $(BIN)/affinity DEFINE=-DAFFINITY -B
+	@make $(BIN)/affinity_lock DEFINE=-DAFFINITY DEFINE+=-DLOCK -B
 
+## dir: create necessary directories
+.PHONY: dir
 dir:
-	mkdir -p $(OBJ) $(BIN) $(OUT)
+	@mkdir -p $(OBJ) $(BIN) $(OUT)
 
 plot:
 	python scripts/plot_results.py -r 1 -d res/find_schedule/
@@ -53,15 +55,12 @@ plot:
 
 best_plot:
 	python scripts/speed_up_plot.py -r 10 -d res/best_schedule/
-#
-# Compile
-#
+
+# compile all c files and create the output files
 $(OBJ)/%.o: %.c
 	$(CC) $(CCFLAGS) $(DEFINE) $(INCLUDES) -o $@ -c $<
 
-#
-# Link
-#	
+# link the output files to create the executable
 $(BIN)/serial: $(OMPLIB_OBJ) $(LOOPS_OBJ) $(MAIN_OBJ)
 	$(CC) $^ -o $@ $(LIB)
 
@@ -77,8 +76,12 @@ $(BIN)/affinity: $(OMPLIB_OBJ) $(LOOPS_OBJ) $(AFFINITY_OBJ) $(MAIN_OBJ)
 $(BIN)/affinity_lock: $(OMPLIB_OBJ) $(LOOPS_OBJ) $(AFFINITY_OBJ) $(MAIN_OBJ)
 	$(CC) $(CCFLAGS) $^ -o $@ $(LIB)
 
-#
-# Clean out object files and the executable.
-#
+## clean: clean directory
+.PHONY: clean
 clean:
-	rm -rf $(OBJ) $(BIN) $(OUT)
+	@rm -rf $(OBJ) $(BIN) $(OUT)
+
+# help: prints each repice's purpose
+.PHONY: help
+help: Makefile
+	@sed -n 's/^##//p' $<
