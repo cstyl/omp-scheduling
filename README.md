@@ -6,6 +6,7 @@ The following schedulers provided by OpenMP are investigated:
 - `STATIC,n`
 - `DYNAMIC,n`
 - `GUIDED,n`
+
 where `n` is the selected chunksize.
 
 Additionally, a scheduler was designed by hand called `affinity` scheduler aiming to combine the characteristics of the afformentioned schedulers and compare the performance.
@@ -14,7 +15,7 @@ Additionally, a scheduler was designed by hand called `affinity` scheduler aimin
 - `includes/`:  Contains the header file called `resources.h` necessary for the development of the code. Additionally, contains `affinity_structs.h` and `macros.h` necessary for the development of the *affinity* scheduler.
 - `src/main.c`: The main source file used to execute each scheduling option for the two available workloads.
 - `src/loops/`: Contains all the functions relevant to the workload, i.e initialisation and validation as well as execution of the workload.
-- `src/omplib/`: Contains wrap functions of **OPENMP** commands in an effort to hide the APIs functions.
+- `src/omplib/`: Contains wrap functions of **OpenMP** commands in an effort to hide the APIs functions.
 - `src/affinity/`: Contains all the functions used to develop the *affinity* scheduler.
 
 ## Options
@@ -30,6 +31,11 @@ Note that one should only choose one of the three main options shown above. In c
 
 
 ## Usage
+
+### Prerequisites:
+- Compiler: [icc](https://software.intel.com/sites/default/files/m/d/4/1/d/8/icc.txt)
+- Build Tool: [make](https://www.gnu.org/software/make/)
+
 ### Building
 
 To compile all the available versions of the code use:
