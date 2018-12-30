@@ -17,6 +17,11 @@ Additionally, a scheduler was designed by hand called `affinity` scheduler aimin
 - `src/loops/`: Contains all the functions relevant to the workload, i.e initialisation and validation as well as execution of the workload.
 - `src/omplib/`: Contains wrap functions of **OpenMP** commands in an effort to hide the APIs functions.
 - `src/affinity/`: Contains all the functions used to develop the *affinity* scheduler.
+- `scripts/performance/`: Contains all the performance tests available to measure the performance of the code.
+- `scripts/pbs/`: Contains all the performance tests to run on the back-end of *CIRRUS* available to measure the performance of the code.
+- `scripts/plots/`: Contains all the plot scripts available to plot the results of the performance tests.
+- `res/`: Directory containing the raw results and plots for each test.
+
 
 ## Options
 The designed *affinity* scheduler comes in two versions. The first one uses `critical regions` in order to synchronize the threads while the second `locks`. One can choose between the two versions by compiling the code with different `DEFINE` flag. Moreover, one can also choose between which scheduler to use to measure its performance. In other words, one can use another `DEFINE` flag to choose between the `best_scheduling` option chosen for each workload or choose to determine the scheduling option on the runtime.
