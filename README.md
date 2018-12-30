@@ -179,25 +179,107 @@ $ ./bin/affinity_lock
 ## Tests
 
 ### Determining the best scheduling option for each workload on constant number of threads
+This test executes multiple times the `bin/runtime` executable. Each time the performance of each **OpenMP** scheduling option is measured for different chunksizes. The number of threads is kept constant in order to determine the best scheduling option and chunksize for each workload.
 
 #### Executing the test
-
+Running on the front-end:
+```sh
+$ make runtime_test
+```
+Submitting a job on the back-end of CIRRUS:
+```sh
+$ make runtime_test_back
+```
 #### Ploting the results
+To plot the results once the test is finished run:
+```sh
+$ make plot_runtime_test
+```
 
 ### Evaluating the performance of the selected best option on variable number of threads
+Observing the results from the previous test, the best scheduling option is selected for each workload. This test runs multiple times the `bin/best_schedule` executable over a set of number of threads. The performance is then evaluated for each thread and each workload.
 
 #### Executing the test
-
+Running on the front-end:
+```sh
+$ make best_schedule_test
+```
+Submitting a job on the back-end of CIRRUS:
+```sh
+$ make best_schedule_test_back
+```
 #### Ploting the results
+To plot the results once the test is finished run:
+```sh
+$ make plot_runtime_test
+```
 
 ### Evaluating the performance of loop2 by tunning its chunksize
+As `loop2` after the *best_schedule* test, saturates for the selected scheduling option and chunksize, a further investigation is performed. The executable `bin/best_schedule_loop2` is executed multiple times over a set of number of threads and chunksizes for the selected *best_scheduling* option for *loop2*.
 
 #### Executing the test
-
+Running on the front-end:
+```sh
+$ make best_schedule_loop2_test
+```
+Submitting a job on the back-end of CIRRUS:
+```sh
+$ make best_schedule_loop2_test_back
+```
 #### Ploting the results
+To plot the results once the test is finished run:
+```sh
+$ make plot_runtime_test
+```
 
 ### Evaluating the performance of affinity scheduling
+The performance of the *affinity scheduler* is investigated for the two available versions, i.e when critical regions are used and when locks are used instead.
 
 #### Executing the test
-
+Running on the front-end:
+```sh
+$ make affinity_schedule_test
+```
+Submitting a job on the back-end of CIRRUS:
+```sh
+$ make affinity_schedule_test_back
+```
 #### Ploting the results
+To plot the results once the test is finished run:
+```sh
+$ make plot_runtime_test
+```
+
+### Evaluating the performance of all the different versions
+The performance of all the implemented versions for each loop is evaluated and compared together.
+
+#### Executing the test
+Running on the front-end:
+```sh
+$ make performance_comparison_test
+```
+Submitting a job on the back-end of CIRRUS:
+```sh
+$ make performance_comparison_test_back
+```
+#### Ploting the results
+To plot the results once the test is finished run:
+```sh
+$ make plot_performance_comparison_test
+```
+
+### Performing all the tests at once:
+Instead of submiting the test scripts one by one, one can use the following to perform all the tests together:
+```sh
+$ make run_tests_front
+```
+If one wants to submits the tests at the back-end can run:
+```sh
+$ make run_tests_back
+```
+
+### Plotting all the test results at once:
+Once all the tests are finished, the results can be plotted using:
+```sh
+$ make plot_tests
+```
