@@ -3,12 +3,14 @@
 #PBS -N affinity
 #PBS -l place=excl
 #PBS -l select=1:ncpus=36
-#PBS -l walltime=0:30:0
+#PBS -l walltime=0:20:0
 #PBS -A d167-s1887443
+#PBS -e out 
+#PBS -o out
 
 cd $PBS_O_WORKDIR
  
  
 module load intel-compilers-16
  
-./scripts/compile_run_test_affinity.sh
+./scripts/performance/affinity_schedule.sh

@@ -1,14 +1,16 @@
 #!/bin/bash --login
 #
-#PBS -N scheduling
+#PBS -N performance_comparison
 #PBS -l place=excl
 #PBS -l select=1:ncpus=36
 #PBS -l walltime=0:20:0
 #PBS -A d167-s1887443
+#PBS -e out 
+#PBS -o out
 
 cd $PBS_O_WORKDIR
  
  
 module load intel-compilers-16
  
-./scripts/test_scheduling.sh
+./scripts/performance/performance_comparison.sh

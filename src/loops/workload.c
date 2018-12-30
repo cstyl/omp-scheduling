@@ -67,6 +67,10 @@ void loop1chunk(int lo, int hi) {
   #pragma omp parallel for schedule(guided, 16) \
                            shared(a,b,lo,hi) private(i,j) \
                            default(none)
+#elif defined BEST_SCHEDULE_LOOP2
+  #pragma omp parallel for schedule(guided, 16) \
+                           shared(a,b,lo,hi) private(i,j) \
+                           default(none)
 #else
 /* Serial Code executed */                          
 #endif
@@ -90,9 +94,13 @@ void loop2chunk(int lo, int hi) {
                            shared(jmax, c, b, rN2,lo,hi) private(i,j,k) \
                            default(none)
 #elif defined BEST_SCHEDULE
+  #pragma omp parallel for schedule(dynamic,8) \
+                           shared(jmax, c, b, rN2,lo,hi) private(i,j,k) \
+                           default(none) 
+#elif defined BEST_SCHEDULE_LOOP2
   #pragma omp parallel for schedule(dynamic,4) \
                            shared(jmax, c, b, rN2,lo,hi) private(i,j,k) \
-                           default(none)                           
+                           default(none)                          
 #else
 /* Serial Code executed */   
 #endif

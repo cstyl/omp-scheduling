@@ -4,7 +4,7 @@
 CC = icc
 
 # Uncomment below to compile the affinity scheduler with locks
-# DEFINE += -DLOCK -DAFFINITY -DRUNTIME -DBEST_SCHEDULE
+# DEFINE += -DLOCK -DAFFINITY -DRUNTIME -DBEST_SCHEDULE -DBEST_SCHEDULE_LOOP2
 DEFINE =
 
 CCFLAGS = -O3 -qopenmp -std=c99
@@ -41,6 +41,7 @@ all: dir
 	@make $(BIN)/serial -B
 	@make $(BIN)/runtime DEFINE=-DRUNTIME -B
 	@make $(BIN)/best_schedule DEFINE=-DBEST_SCHEDULE -B
+	@make $(BIN)/best_schedule_loop2 DEFINE=-DBEST_SCHEDULE_LOOP2 -B
 	@make $(BIN)/affinity DEFINE=-DAFFINITY -B
 	@make $(BIN)/affinity_lock DEFINE=-DAFFINITY DEFINE+=-DLOCK -B
 
@@ -62,12 +63,15 @@ $(OBJ)/%.o: %.c
 
 # link the output files to create the executable
 $(BIN)/serial: $(OMPLIB_OBJ) $(LOOPS_OBJ) $(MAIN_OBJ)
-	$(CC) $^ -o $@ $(LIB)
+	$(CC) $(CCFLAGS) $^ -o $@ $(LIB)
 
 $(BIN)/runtime: $(OMPLIB_OBJ) $(LOOPS_OBJ) $(MAIN_OBJ)
-	$(CC)  $^ -o $@ $(LIB)
+	$(CC) $(CCFLAGS) $^ -o $@ $(LIB)
 
 $(BIN)/best_schedule: $(OMPLIB_OBJ) $(LOOPS_OBJ) $(MAIN_OBJ)
+	$(CC) $(CCFLAGS) $^ -o $@ $(LIB)
+
+$(BIN)/best_schedule_loop2: $(OMPLIB_OBJ) $(LOOPS_OBJ) $(MAIN_OBJ)
 	$(CC) $(CCFLAGS) $^ -o $@ $(LIB)
 
 $(BIN)/affinity: $(OMPLIB_OBJ) $(LOOPS_OBJ) $(AFFINITY_OBJ) $(MAIN_OBJ)

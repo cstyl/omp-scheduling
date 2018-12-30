@@ -1,0 +1,15 @@
+#!/bin/bash --login
+#
+#PBS -N best_loop2
+#PBS -l place=excl
+#PBS -l select=1:ncpus=36
+#PBS -l walltime=0:40:0
+#PBS -A d167-s1887443
+#PBS -e out 
+#PBS -o out
+ 
+cd $PBS_O_WORKDIR
+
+module load intel-compilers-16
+ 
+./scripts/performance/best_schedule_loop2.sh

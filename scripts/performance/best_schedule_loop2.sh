@@ -1,16 +1,16 @@
 #!/bin/bash
-resdir="res/best_loop2/"		# directory where results are placed
-outdir="out/"					# directory for any temporary output files
+resdir="res/best_loop2"			# directory where results are placed
+outdir="out"					# directory for any temporary output files
 
 KIND=(static dynamic guided)	# tested kinds of scheduling
 THREADS="1 2 4 6 8 16"			# max number of threads			
 CHUNKSIZE="1 2 4 8 16 32 64"	# chunksize of each kind		
 REPS=10							# number of repetitions of each combination
 
-outfile="${resdir}best_loop2_results.csv"
-testfile="${outdir}best_test_results.txt"
-last_element_file="${outdir}best_temp_results.txt"
-merge_element_file="${outdir}best_temp_results2.txt"
+outfile="${resdir}/best_loop2_results.csv"
+testfile="${outdir}/best_test_results.txt"
+last_element_file="${outdir}/best_temp_results.txt"
+merge_element_file="${outdir}/best_temp_results2.txt"
 
 echo "Running best_schedule script"
 printf "chunksize, num_threads, reps, t1, res1, t2, res2 \n" > $outfile
@@ -26,7 +26,7 @@ for i in ${CHUNKSIZE}; do
 			echo "Starting repetition ${k}"
 			echo "${i}, $OMP_NUM_THREADS, ${k}," > $testfile
 			# run the code
-			bin/loops_scheduling > $last_element_file
+			bin/runtime > $last_element_file
 			# get last element of each line
 			awk '{print $NF}' $last_element_file > $merge_element_file
 			# combine 4 lines into 1, separated by commas
@@ -39,5 +39,3 @@ done
 
 # remove intermediate files
 rm -f $testfile $last_element_file $merge_element_file
-
-# python scripts/plot_results.py -r $REPS -d $resdir > out.txt

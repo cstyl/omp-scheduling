@@ -24,10 +24,11 @@ The designed *affinity* scheduler comes in two versions. The first one uses `cri
 The following options are available:
 - `-DRUNTIME`: Choose to select the scheduling option on the runtime.
 - `-DBEST_SCHEDULE`: Choose to use the best scheduling option determined for each workload.
+- `-DBEST_SCHEDULE_LOOP2`: Choose to use the best scheduling option determined for each workload after a further investigation of `loop2`.
 - `-DAFFINITY`: Choose to use affinity scheduler.
 	- `-DLOCK`: If set, the affinity scheduler with locks is used, otherwise the one with critical regions.
 
-Note that one should only choose one of the three main options shown above. In case no option is selected, the `serial` version of the code is being executed.
+Note that one should only choose one of the four main options shown above. In case no option is selected, the `serial` version of the code is being executed.
 
 
 ## Usage
@@ -46,6 +47,7 @@ This will create all the necessary directories for the code to be executed. All 
 - `bin/serial`: Serial version of the code.
 - `bin/runtime`: Parallel version of the code where scheduling can be determined on the runtime. Note that only the scheduling options provided by **OpenMP** can be selected.
 - `bin/best_schedule`: The best scheduling options provided by **OpenMP** are used for each workload.
+- `bin/best_schedule_loop2`: The best scheduling options provided by **OpenMP** are used for each workload after the best schedule option for `loop2` was tunned based on its chunksize.
 - `bin/affinity`: The affinity scheduler with critical regions is used.
 - `bin/affinity_lock`: The affinity scheduler with locks is used.
 
@@ -79,6 +81,15 @@ icc -O3 -qopenmp -std=c99 -Wall -DBEST_SCHEDULE -Iincludes -Isrc/affinity -Isrc/
 icc -O3 -qopenmp -std=c99 -Wall -DBEST_SCHEDULE -Iincludes -Isrc/affinity -Isrc/loops -Isrc/omplib -o obj/workload.o -c src/loops/workload.c
 icc -O3 -qopenmp -std=c99 -Wall -DBEST_SCHEDULE -Iincludes -Isrc/affinity -Isrc/loops -Isrc/omplib -o obj/main.o -c src/main.c
 icc -O3 -qopenmp -std=c99 -Wall obj/omplib.o obj/workload.o obj/main.o -o bin/best_schedule -lm -qopenmp
+```
+
+Build the best_scheduling version for loop2:
+```sh
+$ make bin/best_schedule_loop2 DEFINE=-DBEST_SCHEDULE_LOOP2 -B
+icc -O3 -qopenmp -std=c99 -Wall -DBEST_SCHEDULE_LOOP2 -Iincludes -Isrc/affinity -Isrc/loops -Isrc/omplib -o obj/omplib.o -c src/omplib/omplib.c
+icc -O3 -qopenmp -std=c99 -Wall -DBEST_SCHEDULE_LOOP2 -Iincludes -Isrc/affinity -Isrc/loops -Isrc/omplib -o obj/workload.o -c src/loops/workload.c
+icc -O3 -qopenmp -std=c99 -Wall -DBEST_SCHEDULE_LOOP2 -Iincludes -Isrc/affinity -Isrc/loops -Isrc/omplib -o obj/main.o -c src/main.c
+icc -O3 -qopenmp -std=c99 -Wall obj/omplib.o obj/workload.o obj/main.o -o bin/best_schedule_loop2 -lm -qopenmp
 ```
 
 Build the affinity version with critical regions:
@@ -147,6 +158,12 @@ To executed the best_scheduling version:
 ```sh
 $ ./bin/best_schedule
 ```
+This will execute the code with `GUIDED,16` for `loop1` and `DYNAMIC,8` for `loop2`.
+
+To executed the best_scheduling_loop2 version:
+```sh
+$ ./bin/best_schedule_loop2
+```
 This will execute the code with `GUIDED,16` for `loop1` and `DYNAMIC,4` for `loop2`.
 
 To executed the affinity version with critical regions use:
@@ -158,3 +175,29 @@ To executed the affinity version with locks use:
 ```sh
 $ ./bin/affinity_lock
 ```
+
+## Tests
+
+### Determining the best scheduling option for each workload on constant number of threads
+
+#### Executing the test
+
+#### Ploting the results
+
+### Evaluating the performance of the selected best option on variable number of threads
+
+#### Executing the test
+
+#### Ploting the results
+
+### Evaluating the performance of loop2 by tunning its chunksize
+
+#### Executing the test
+
+#### Ploting the results
+
+### Evaluating the performance of affinity scheduling
+
+#### Executing the test
+
+#### Ploting the results

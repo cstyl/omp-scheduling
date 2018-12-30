@@ -1,31 +1,27 @@
 #!/bin/bash
-EXEC=("affinity_critical" "affinity_lock")
+EXEC=("bin/best_schedule" "bin/best_schedule_loop2" "bin/affinity" "bin/affinity_lock")
 THREADS="1 2 4 6 8 12 16"
 REPS=10
 
-cd res
-mkdir -p affinity
-cd ..
-
-outfile="res/affinity/results_affinity.csv"
-testfile="out/aff_test_results.txt"
-last_element_file="out/aff_temp_results.txt"
-merge_element_file="out/aff_temp_results2.txt"
+outfile="res/comparison/results_comparison.csv"
+testfile="out/comp_test_results.txt"
+last_element_file="out/comp_temp_results.txt"
+merge_element_file="out/comp_temp_results2.txt"
 
 printf "exec, num_threads, reps, res1, t1, res2, t2 \n" > $outfile
 
-for i in `seq 0 1`
+for i in `seq -w 0 $((${#EXEC[@]}-1))`
 do
-	ver=$((i + 4))
 	for j in ${THREADS}
 	do
-		echo "Running bin/${EXEC[${i}]} on ${j} threads"
+		export OMP_NUM_THREADS=${j}
+		echo "Running ${EXEC[${i}]} on ${j} threads"
 		for k in `seq 0 $REPS`
 		do
 			echo "Starting repetition ${k}"
-			echo "${ver}, ${j}, ${k}," > $testfile
+			echo "${i}, ${j}, ${k}," > $testfile
 			# run the code
-			bin/${EXEC[${i}]} -n ${j} > $last_element_file
+			${EXEC[${i}]} > $last_element_file
 			# get last element of each line
 			awk '{print $NF}' $last_element_file > $merge_element_file
 			# combine 4 lines into 1, separated by commas
