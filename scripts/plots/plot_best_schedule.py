@@ -1,14 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import argparse
 
 print("Running plot_best_schedule script..")
-
-parser = argparse.ArgumentParser(description='Read number of repetitions')
-parser.add_argument('-r', dest='reps', type=int, help='Enter the number of the repetitions performed')
-args = parser.parse_args()
-
-reps = args.reps
 
 maindir = 'res/best_schedule/'
 filename = 'best_schedule_results.csv'
@@ -40,7 +33,8 @@ speed_up[1,:] = avg_time[1,0] / avg_time[1,:]
 #speed up vs number of threads
 plt.figure()
 plt.plot(threads, speed_up[0,:], '-*', label='Loop 1')
-plt.plot(threads, speed_up[1,:], '-*', label='Loop 2')
+plt.plot(threads, speed_up[1,:], '-^', label='Loop 2')
+plt.plot(threads, threads, '--')
 plt.xlabel('Number of Threads')
 plt.ylabel('Speed Up (times)')
 plt.legend()

@@ -14,7 +14,7 @@ merge_element_file="${outdir}/temp_results2.txt"
 best_option_file="${outdir}/best_option.txt"
 
 echo "Running runtime script"
-printf "num_threads, kind, chunksize, reps, t1, res1, t2, res2 \n" > $outfile
+printf "num_threads, kind, chunksize, reps, res1, t1, res2, t2\n" > $outfile
 
 export OMP_NUM_THREADS=${THREADS}
 # run program for all kinds of schedules for a predifined chunksizes.

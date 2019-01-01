@@ -11,7 +11,7 @@ last_element_file="${outdir}/best_temp_results.txt"
 merge_element_file="${outdir}/best_temp_results2.txt"
 
 echo "Running best_schedule script"
-printf "num_threads, reps, t1, res1, t2, res2 \n" > $outfile
+printf "num_threads, reps, res1, t1, res2, t2\n" > $outfile
 
 # run program for all kinds of schedules for a predifined chunksizes.
 # repeat each run REPS times for a more robust timings

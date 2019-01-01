@@ -115,19 +115,19 @@ performance_comparison_test_back:
 
 # Plot the test results
 plot_runtime_test:
-	python $(PLOTS)/plot_runtime.py -r 10
+	python $(PLOTS)/plot_runtime.py
 
 plot_best_schedule_test:
-	python $(PLOTS)/plot_best_schedule.py -r 10
+	python $(PLOTS)/plot_best_schedule.py
 
 plot_best_schedule_loop2_test:
-	python $(PLOTS)/plot_best_schedule_loop2.py -r 10
+	python $(PLOTS)/plot_best_schedule_loop2.py
 
 plot_affinity_schedule_test:
-	python $(PLOTS)/plot_affinity_schedule.py -r 10
+	python $(PLOTS)/plot_affinity_schedule.py
 
 plot_performance_comparison_test:
-	python $(PLOTS)/plot_performance_comparison.py -r 10
+	python $(PLOTS)/plot_performance_comparison.py
 
 # compile all c files and create the output files
 $(OBJ)/%.o: %.c

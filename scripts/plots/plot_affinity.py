@@ -1,14 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import argparse
 
 print("Running plot_affinity script..")
-
-parser = argparse.ArgumentParser(description='Read number of repetitions')
-parser.add_argument('-r', dest='reps', type=int, help='Enter the number of the repetitions performed')
-args = parser.parse_args()
-
-reps = args.reps
 
 maindir = 'res/affinity/'
 filename = 'results_affinity.csv'
@@ -40,7 +33,7 @@ for num,version in enumerate(versions):
 		avg_time[num,num_t,0] = np.mean(thread_data[:,4])
 		avg_time[num,num_t,1] = np.mean(thread_data[:,6])
 
-for loop_idx, loop_name in enumerate(loops)
+for loop_idx, loop_name in enumerate(loops):
 	plt.figure()
 	plt.plot(threads, avg_time[0,:,loop_idx], '-*', label=versions[0])
 	plt.plot(threads, avg_time[1,:,loop_idx], '-^', label=versions[1])
@@ -51,14 +44,14 @@ for loop_idx, loop_name in enumerate(loops)
 	plt.savefig(maindir + 'execution_time_' + loop_name + '.eps', format='eps', dpi=1000)
 	plt.close()
 
-	print("Execution time plot for " + loop_name + "completed..")
+	print("Execution time plot for " + loop_name + " completed..")
 
 plt.figure()
 plt.plot(threads, avg_time[0,0,0]/avg_time[0,:,0], '-*', label=versions[0] + '_' + loops[0])
 plt.plot(threads, avg_time[1,0,0]/avg_time[1,:,0], '-o', label=versions[1] + '_' + loops[0])
 plt.plot(threads, avg_time[0,0,1]/avg_time[0,:,1], '-^', label=versions[0] + '_' + loops[1])
 plt.plot(threads, avg_time[1,0,1]/avg_time[1,:,1], '-+', label=versions[1] + '_' + loops[1])
-plt.plot(threads, threads, 'k-')
+plt.plot(threads, threads, '--')
 plt.xlabel('Number of Threads')
 plt.ylabel('Speed Up (times)')
 plt.ylim([0,20])
@@ -74,10 +67,10 @@ plt.plot(threads, (avg_time[0,0,0]/avg_time[0,:,0]) / threads * 100, '-*', label
 plt.plot(threads, (avg_time[1,0,0]/avg_time[1,:,0]) / threads * 100, '-o', label=versions[1] + '_' + loops[0])
 plt.plot(threads, (avg_time[0,0,1]/avg_time[0,:,1]) / threads * 100, '-^', label=versions[0] + '_' + loops[1])
 plt.plot(threads, (avg_time[1,0,1]/avg_time[1,:,1]) / threads * 100, '-+', label=versions[1] + '_' + loops[1])
-plt.plot(threads, 100, 'k-')
+plt.plot(threads, [100, 100, 100, 100, 100, 100, 100], '--')
 plt.xlabel('Number of Threads')
 plt.ylabel('Efficiency (%)')
-plt.ylim([0,20])
+plt.ylim([40,110])
 plt.legend()
 plt.grid(True)
 plt.savefig(maindir + 'efficiency.eps', format='eps', dpi=1000)

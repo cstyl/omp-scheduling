@@ -8,12 +8,12 @@ CHUNKSIZE="1 2 4 8 16 32 64"	# chunksize of each kind
 REPS=10							# number of repetitions of each combination
 
 outfile="${resdir}/best_loop2_results.csv"
-testfile="${outdir}/best_test_results.txt"
-last_element_file="${outdir}/best_temp_results.txt"
-merge_element_file="${outdir}/best_temp_results2.txt"
+testfile="${outdir}/best_loop2_results_test_results.txt"
+last_element_file="${outdir}/best_loop2_results_temp_results.txt"
+merge_element_file="${outdir}/best_loop2_results_temp_results2.txt"
 
 echo "Running best_schedule script"
-printf "chunksize, num_threads, reps, t1, res1, t2, res2 \n" > $outfile
+printf "chunksize, num_threads, reps, res1, t1, res2, t2\n" > $outfile
 
 # run program for all kinds of schedules for a predifined chunksizes.
 # repeat each run REPS times for a more robust timings
